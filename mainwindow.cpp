@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
         {
-            QFrame* pFrame = new QFrame();
+            QFrame* pFrame = new QFrame;
             palette = pFrame->palette();
             palette.setColor(pFrame->backgroundRole(), Qt::black);
             pFrame->setPalette(palette);
