@@ -28,14 +28,14 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
         {
-            QFrame* pFrame = new QFrame;
-            palette = pFrame->palette();
-            palette.setColor(pFrame->backgroundRole(), Qt::black);
-            pFrame->setPalette(palette);
-            pFrame->setAutoFillBackground(true);
-            m_pUI->tetrisGrid->addWidget(pFrame, row, column);
+            QWidget* pWidget = new QWidget;
+            palette = pWidget->palette();
+            palette.setColor(pWidget->backgroundRole(), Qt::black);
+            pWidget->setPalette(palette);
+            pWidget->setAutoFillBackground(true);
+            m_pUI->tetrisGrid->addWidget(pWidget, row, column);
             TetrisCoordinate coordinate(row, column);
-            m_tetrisCoordinateToQFrame[coordinate] = pFrame;
+            m_tetrisCoordinateToQWidget[coordinate] = pWidget;
         }
     }
 
@@ -92,13 +92,13 @@ void MainWindow::modelUpdated()
                 }
             }
 
-            QFrame* pFrame = m_tetrisCoordinateToQFrame[coordinate];
-            if (newQtColor != pFrame->palette().color(pFrame->backgroundRole()))
+            QWidget* pWidget = m_tetrisCoordinateToQWidget[coordinate];
+            if (newQtColor != pWidget->palette().color(pWidget->backgroundRole()))
             {
                 //std::cout << "updating color for row " << row << " column " << column << std::endl;
-                QPalette palette = pFrame->palette();
-                palette.setColor(pFrame->backgroundRole(), newQtColor);
-                pFrame->setPalette(palette);
+                QPalette palette = pWidget->palette();
+                palette.setColor(pWidget->backgroundRole(), newQtColor);
+                pWidget->setPalette(palette);
             }
         }
     }

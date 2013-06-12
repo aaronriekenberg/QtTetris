@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QFrame>
 #include <QMainWindow>
 #include <QTimer>
+#include <QWidget>
 #include <map>
 #include "tetrismodel.h"
 
@@ -32,7 +32,7 @@ private:
 
     QTimer* m_pTimer;
 
-    std::map<TetrisCoordinate, QFrame*> m_tetrisCoordinateToQFrame;
+    std::map<TetrisCoordinate, QWidget*> m_tetrisCoordinateToQWidget;
 };
 
 #endif // MAINWINDOW_H
