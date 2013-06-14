@@ -1,9 +1,9 @@
 #ifndef SQUAREPIECE_H
 #define SQUAREPIECE_H
 
-#include "tetrispiece.h"
+#include "abstracttetrispiece.h"
 
-class SquarePiece : public TetrisPiece
+class SquarePiece : public AbstractTetrisPiece<SquarePiece>
 {
 public:
     SquarePiece(
@@ -16,9 +16,6 @@ public:
 
     virtual int numOrientations() const;
 
-    virtual boost::shared_ptr<TetrisPiece>
-    makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
-                    int orientation) const;
 };
 
 #endif // SQUAREPIECE_H

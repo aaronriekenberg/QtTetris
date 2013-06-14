@@ -45,8 +45,9 @@ std::vector<TetrisCoordinate> buildCoordinates(
 RightLPiece::RightLPiece(
         const TetrisCoordinate& centerCoordinate,
         int orientation) :
-    TetrisPiece(centerCoordinate, orientation,
-                buildCoordinates(centerCoordinate, orientation))
+    AbstractTetrisPiece(
+        centerCoordinate, orientation,
+        buildCoordinates(centerCoordinate, orientation))
 {
 
 }
@@ -64,14 +65,4 @@ TetrisConstants::TetrisCellColor RightLPiece::color() const
 int RightLPiece::numOrientations() const
 {
     return 4;
-}
-
-boost::shared_ptr<TetrisPiece>
-RightLPiece::makeTetrisPiece(
-         const TetrisCoordinate& centerCoordinate,
-         int orientation) const
-{
-    return boost::shared_ptr<TetrisPiece>(
-                new RightLPiece(
-                    centerCoordinate, orientation));
 }

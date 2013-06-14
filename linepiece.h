@@ -1,9 +1,9 @@
 #ifndef LINEPIECE_H
 #define LINEPIECE_H
 
-#include "tetrispiece.h"
+#include "abstracttetrispiece.h"
 
-class LinePiece : public TetrisPiece
+class LinePiece : public AbstractTetrisPiece<LinePiece>
 {
 public:
     LinePiece(
@@ -16,9 +16,6 @@ public:
 
     virtual int numOrientations() const;
 
-    virtual boost::shared_ptr<TetrisPiece>
-    makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
-                    int orientation) const;
 };
 
 #endif // LINEPIECE_H

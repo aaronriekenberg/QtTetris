@@ -16,7 +16,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     tetrismodel.cpp \
     tetriscoordinate.cpp \
-    tetrispiece.cpp \
     squarepiece.cpp \
     tetrispiecefactory.cpp \
     tetrisstackcells.cpp \
@@ -40,6 +39,7 @@ HEADERS  += mainwindow.h \
     linepiece.h \
     tpiece.h \
     leftzpiece.h \
-    rightzpiece.h
+    rightzpiece.h \
+    abstracttetrispiece.h
 
 FORMS    += mainwindow.ui
