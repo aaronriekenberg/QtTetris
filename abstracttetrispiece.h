@@ -28,17 +28,17 @@ public:
         return m_centerCoordinate;
     }
 
-    int centerRow() const
+    virtual int centerRow() const
     {
         return centerCoordinate().row();
     }
 
-    int centerColumn() const
+    virtual int centerColumn() const
     {
         return centerCoordinate().column();
     }
 
-    int orientation() const
+    virtual int orientation() const
     {
         return m_orientation;
     }
