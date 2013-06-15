@@ -9,46 +9,50 @@
 class TetrisPiece
 {
 public:
-    TetrisPiece()
-    {
+    TetrisPiece(
+            const TetrisCoordinate& centerCoordinate,
+            int orientation,
+            const std::vector<TetrisCoordinate>& coordinates);
 
-    }
-
-    virtual ~TetrisPiece()
-    {
-
-    }
+    virtual ~TetrisPiece();
 
     virtual TetrisConstants::TetrisCellColor color() const = 0;
 
-    virtual const TetrisCoordinate& centerCoordinate() const = 0;
+    const TetrisCoordinate& centerCoordinate() const;
 
-    virtual int centerRow() const = 0;
+    int centerRow() const;
 
-    virtual int centerColumn() const = 0;
+    int centerColumn() const;
 
-    virtual int orientation() const = 0;
+    int orientation() const;
 
     virtual int numOrientations() const = 0;
 
-    virtual int nextOrientation() const = 0;
+    int nextOrientation() const;
 
-    virtual const std::vector<TetrisCoordinate>& coordinates() const = 0;
+    const std::vector<TetrisCoordinate>& coordinates() const;
 
     virtual boost::shared_ptr<TetrisPiece>
     makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
                     int orientation) const = 0;
 
-    virtual boost::shared_ptr<TetrisPiece> cloneWithNewCenterCoordinate(
-            const TetrisCoordinate& newCenterCoordinate) const = 0;
+    boost::shared_ptr<TetrisPiece> cloneWithNewCenterCoordinate(
+            const TetrisCoordinate& newCenterCoordinate) const;
 
-    virtual boost::shared_ptr<TetrisPiece> cloneWithNewCenterRow(
-            int newCenterRow) const = 0;
+    boost::shared_ptr<TetrisPiece> cloneWithNewCenterRow(
+            int newCenterRow) const;
 
-    virtual boost::shared_ptr<TetrisPiece> cloneWithNewCenterColumn(
-            int newCenterColumn) const = 0;
+    boost::shared_ptr<TetrisPiece> cloneWithNewCenterColumn(
+            int newCenterColumn) const;
 
-    virtual boost::shared_ptr<TetrisPiece> cloneWithNextOrientation() const = 0;
+    boost::shared_ptr<TetrisPiece> cloneWithNextOrientation() const;
+
+private:
+    TetrisCoordinate m_centerCoordinate;
+
+    int m_orientation;
+
+    std::vector<TetrisCoordinate> m_coordinates;
 
 };
 
