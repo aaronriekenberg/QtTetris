@@ -1,5 +1,6 @@
 #include "tetriscoordinate.h"
 #include "tetrisconstants.h"
+#include <boost/functional/hash.hpp>
 
 TetrisCoordinate::TetrisCoordinate(int row, int column) :
     m_row(row),
@@ -50,6 +51,14 @@ TetrisCoordinate TetrisCoordinate::plusColumns(int columns) const
 TetrisCoordinate TetrisCoordinate::plusRowsAndColumns(int rows, int columns) const
 {
     return TetrisCoordinate(m_row + rows, m_column + columns);
+}
+
+size_t hash_value(const TetrisCoordinate& tetrisCoordinate)
+{
+    size_t seed = 0;
+    boost::hash_combine(seed, tetrisCoordinate.row());
+    boost::hash_combine(seed, tetrisCoordinate.column());
+    return seed;
 }
 
 std::ostream& operator<<(std::ostream& stream, const TetrisCoordinate& tetrisCoordinate)

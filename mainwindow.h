@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QWidget>
-#include <map>
+#include <boost/functional/hash.hpp>
+#include <unordered_map>
 #include "tetrismodel.h"
 
 namespace Ui {
@@ -27,13 +28,14 @@ protected:
     virtual void keyPressEvent(QKeyEvent *pKeyEvent);
     
 private:
-    Ui::MainWindow* m_pUI;
+    Ui::MainWindow* m_pUI = nullptr;
 
-    TetrisModel* m_pModel;
+    TetrisModel* m_pModel = nullptr;
 
-    QTimer* m_pTimer;
+    QTimer* m_pTimer = nullptr;
 
-    std::map<TetrisCoordinate, QWidget*> m_tetrisCoordinateToQWidget;
+    std::unordered_map<TetrisCoordinate, QWidget*,
+        boost::hash<TetrisCoordinate>> m_tetrisCoordinateToQWidget;
 };
 
 #endif // MAINWINDOW_H

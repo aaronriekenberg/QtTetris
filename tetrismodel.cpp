@@ -60,7 +60,7 @@ void TetrisModel::reset()
     m_deferPublishCount = 0;
 }
 
-const std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor>&
+const TetrisModel::DrawableCellsMap_t&
 TetrisModel::drawableCells() const
 {
     return m_drawableCells;

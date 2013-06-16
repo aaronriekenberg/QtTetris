@@ -2,8 +2,9 @@
 #define TETRISMODEL_H
 
 #include <QObject>
-#include <map>
+#include <boost/functional/hash.hpp>
 #include <memory>
+#include <unordered_map>
 #include "tetrispiece.h"
 #include "tetrispiecefactory.h"
 #include "tetrisstackcells.h"
@@ -16,8 +17,10 @@ public:
 
     void reset();
 
-    const std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor>&
-    drawableCells() const;
+    typedef std::unordered_map<TetrisCoordinate, TetrisConstants::TetrisCellColor,
+        boost::hash<TetrisCoordinate>> DrawableCellsMap_t;
+
+    const DrawableCellsMap_t& drawableCells() const;
 
     void moveCurrentPieceDown();
 
@@ -68,7 +71,7 @@ private:
 
     std::shared_ptr<TetrisPiece> m_pCurrentPiece;
 
-    std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor> m_drawableCells;
+    DrawableCellsMap_t m_drawableCells;
 
     int m_numLines = 0;
 
