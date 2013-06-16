@@ -33,6 +33,7 @@ private:
 
 size_t hash_value(const TetrisCoordinate& tetrisCoordinate);
 
-std::ostream& operator<<(std::ostream& stream, const TetrisCoordinate& tetrisCoordinate);
+std::ostream& operator<<(std::ostream& stream,
+                         const TetrisCoordinate& tetrisCoordinate);
 
 #endif // TETRISCOORDINATE_H
