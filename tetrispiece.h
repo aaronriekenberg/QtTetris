@@ -3,7 +3,7 @@
 
 #include "tetriscoordinate.h"
 #include "tetrisconstants.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 class TetrisPiece
@@ -14,7 +14,7 @@ public:
             int orientation,
             const std::vector<TetrisCoordinate>& coordinates);
 
-    virtual ~TetrisPiece();
+    virtual ~TetrisPiece() = default;
 
     virtual TetrisConstants::TetrisCellColor color() const = 0;
 
@@ -32,20 +32,20 @@ public:
 
     const std::vector<TetrisCoordinate>& coordinates() const;
 
-    virtual boost::shared_ptr<TetrisPiece>
+    virtual std::shared_ptr<TetrisPiece>
     makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
                     int orientation) const = 0;
 
-    boost::shared_ptr<TetrisPiece> cloneWithNewCenterCoordinate(
+    std::shared_ptr<TetrisPiece> cloneWithNewCenterCoordinate(
             const TetrisCoordinate& newCenterCoordinate) const;
 
-    boost::shared_ptr<TetrisPiece> cloneWithNewCenterRow(
+    std::shared_ptr<TetrisPiece> cloneWithNewCenterRow(
             int newCenterRow) const;
 
-    boost::shared_ptr<TetrisPiece> cloneWithNewCenterColumn(
+    std::shared_ptr<TetrisPiece> cloneWithNewCenterColumn(
             int newCenterColumn) const;
 
-    boost::shared_ptr<TetrisPiece> cloneWithNextOrientation() const;
+    std::shared_ptr<TetrisPiece> cloneWithNextOrientation() const;
 
 private:
     TetrisCoordinate m_centerCoordinate;

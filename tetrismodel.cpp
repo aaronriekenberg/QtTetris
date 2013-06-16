@@ -88,7 +88,7 @@ void TetrisModel::moveCurrentPieceDown()
 {
     if (gameRunning() && m_pCurrentPiece)
     {
-        boost::shared_ptr<TetrisPiece> pCurrentPieceMoved =
+        auto pCurrentPieceMoved =
                 m_pCurrentPiece->cloneWithNewCenterRow(
                     m_pCurrentPiece->centerRow() + 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
@@ -122,7 +122,7 @@ void TetrisModel::moveCurrentPieceLeft()
 {
     if (gameRunning() && m_pCurrentPiece)
     {
-        boost::shared_ptr<TetrisPiece> pCurrentPieceMoved =
+        auto pCurrentPieceMoved =
                 m_pCurrentPiece->cloneWithNewCenterColumn(
                     m_pCurrentPiece->centerColumn() - 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
@@ -137,7 +137,7 @@ void TetrisModel::moveCurrentPieceRight()
 {
     if (gameRunning() && m_pCurrentPiece)
     {
-        boost::shared_ptr<TetrisPiece> pCurrentPieceMoved =
+        auto pCurrentPieceMoved =
                 m_pCurrentPiece->cloneWithNewCenterColumn(
                     m_pCurrentPiece->centerColumn() + 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
@@ -152,7 +152,7 @@ void TetrisModel::rotateCurrentPiece()
 {
     if (gameRunning() && m_pCurrentPiece)
     {
-        boost::shared_ptr<TetrisPiece> pCurrentPieceRotated =
+        std::shared_ptr<TetrisPiece> pCurrentPieceRotated =
                 m_pCurrentPiece->cloneWithNextOrientation();
         if (isPieceLocationValid(*pCurrentPieceRotated))
         {
@@ -190,8 +190,7 @@ int TetrisModel::numLines() const
 
 void TetrisModel::addNewPiece()
 {
-    boost::shared_ptr<TetrisPiece> pNewPiece =
-            m_pieceFactory.createRandomTetrisPiece();
+    auto pNewPiece = m_pieceFactory.createRandomTetrisPiece();
     if (isPieceLocationValid(*pNewPiece))
     {
         m_pCurrentPiece = pNewPiece;
@@ -207,12 +206,8 @@ void TetrisModel::addCurrentPieceToStack()
 {
     if (m_pCurrentPiece)
     {
-        std::vector<TetrisCoordinate>::const_iterator i;
-        for (i = m_pCurrentPiece->coordinates().begin();
-             i != m_pCurrentPiece->coordinates().end();
-             ++i)
+        for (auto coordinate : m_pCurrentPiece->coordinates())
         {
-            const TetrisCoordinate& coordinate = *i;
             m_stackCells.set(coordinate, m_pCurrentPiece->color());
         }
         handleFilledStackRows();
@@ -238,12 +233,8 @@ void TetrisModel::handleFilledStackRows()
 
 bool TetrisModel::isPieceLocationValid(const TetrisPiece& tetrisPiece)
 {
-    std::vector<TetrisCoordinate>::const_iterator i;
-    for (i = tetrisPiece.coordinates().begin();
-         i != tetrisPiece.coordinates().end();
-         ++i)
+    for (auto coordinate : tetrisPiece.coordinates())
     {
-        const TetrisCoordinate& coordinate = *i;
         if (!coordinate.isValid())
         {
             return false;
@@ -262,12 +253,8 @@ void TetrisModel::updateDrawableCells()
 
     if (m_pCurrentPiece)
     {
-        std::vector<TetrisCoordinate>::const_iterator i;
-        for (i = m_pCurrentPiece->coordinates().begin();
-             i != m_pCurrentPiece->coordinates().end();
-             ++i)
+        for (auto coordinate : m_pCurrentPiece->coordinates())
         {
-            const TetrisCoordinate& coordinate = *i;
             m_drawableCells[coordinate] = m_pCurrentPiece->color();
         }
     }

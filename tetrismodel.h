@@ -2,8 +2,8 @@
 #define TETRISMODEL_H
 
 #include <QObject>
-#include <boost/shared_ptr.hpp>
 #include <map>
+#include <memory>
 #include "tetrispiece.h"
 #include "tetrispiecefactory.h"
 #include "tetrisstackcells.h"
@@ -46,8 +46,9 @@ public slots:
     void periodicUpdate();
 
 private:
-    TetrisModel(const TetrisModel& rhs);
-    TetrisModel& operator=(const TetrisModel& rhs);
+    TetrisModel(const TetrisModel& rhs) = delete;
+
+    TetrisModel& operator=(const TetrisModel& rhs) = delete;
 
     void addNewPiece();
 
@@ -65,17 +66,17 @@ private:
 
     TetrisStackCells m_stackCells;
 
-    boost::shared_ptr<TetrisPiece> m_pCurrentPiece;
+    std::shared_ptr<TetrisPiece> m_pCurrentPiece;
 
     std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor> m_drawableCells;
 
-    int m_numLines;
+    int m_numLines = 0;
 
-    bool m_paused;
+    bool m_paused = false;
 
-    bool m_gameOver;
+    bool m_gameOver = false;
 
-    int m_deferPublishCount;
+    int m_deferPublishCount = 0;
     
 };
 

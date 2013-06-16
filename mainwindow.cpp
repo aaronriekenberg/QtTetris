@@ -49,17 +49,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::modelUpdated()
 {
-    const std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor>& drawableCells =
-            m_pModel->drawableCells();
+    const auto& drawableCells = m_pModel->drawableCells();
     //std::cout << "MainWindow::modelUpdated drawableCells.size = " << drawableCells.size() << std::endl;
-    std::map<TetrisCoordinate, TetrisConstants::TetrisCellColor>::const_iterator drawableCellsIter;
     for (int row = 0; row < TetrisConstants::NUM_ROWS; ++row)
     {
         for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
         {
             TetrisCoordinate coordinate(row, column);
             QColor newQtColor(Qt::black);
-            drawableCellsIter = drawableCells.find(coordinate);
+            auto drawableCellsIter = drawableCells.find(coordinate);
             if (drawableCellsIter != drawableCells.end())
             {
                 TetrisConstants::TetrisCellColor newCellColor = drawableCellsIter->second;

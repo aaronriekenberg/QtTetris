@@ -16,16 +16,11 @@ public:
 
     }
 
-    virtual ~AbstractTetrisPiece()
-    {
-
-    }
-
-    virtual boost::shared_ptr<TetrisPiece>
+    virtual std::shared_ptr<TetrisPiece>
     makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
                     int orientation) const
     {
-        return boost::shared_ptr<TetrisPiece>(
+        return std::shared_ptr<TetrisPiece>(
                     new T(centerCoordinate, orientation));
     }
 

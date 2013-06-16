@@ -11,11 +11,6 @@ TetrisPiece::TetrisPiece(
 
 }
 
-TetrisPiece::~TetrisPiece()
-{
-
-}
-
 const TetrisCoordinate&
 TetrisPiece::centerCoordinate() const
 {
@@ -48,14 +43,14 @@ TetrisPiece::coordinates() const
     return m_coordinates;
 }
 
-boost::shared_ptr<TetrisPiece>
+std::shared_ptr<TetrisPiece>
 TetrisPiece::cloneWithNewCenterCoordinate(
         const TetrisCoordinate& newCenterCoordinate) const
 {
     return makeTetrisPiece(newCenterCoordinate, orientation());
 }
 
-boost::shared_ptr<TetrisPiece>
+std::shared_ptr<TetrisPiece>
 TetrisPiece::cloneWithNewCenterRow(
         int newCenterRow) const
 {
@@ -63,7 +58,7 @@ TetrisPiece::cloneWithNewCenterRow(
                 TetrisCoordinate(newCenterRow, centerColumn()));
 }
 
-boost::shared_ptr<TetrisPiece>
+std::shared_ptr<TetrisPiece>
 TetrisPiece::cloneWithNewCenterColumn(
         int newCenterColumn) const
 {
@@ -71,7 +66,7 @@ TetrisPiece::cloneWithNewCenterColumn(
                 TetrisCoordinate(centerRow(), newCenterColumn));
 }
 
-boost::shared_ptr<TetrisPiece>
+std::shared_ptr<TetrisPiece>
 TetrisPiece::cloneWithNextOrientation() const
 {
     return makeTetrisPiece(centerCoordinate(), nextOrientation());

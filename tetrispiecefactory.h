@@ -1,7 +1,7 @@
 #ifndef TETRISPIECEFACTORY_H
 #define TETRISPIECEFACTORY_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "tetrispiece.h"
 
 class TetrisPieceFactory
@@ -9,10 +9,10 @@ class TetrisPieceFactory
 public:
     TetrisPieceFactory();
 
-    boost::shared_ptr<TetrisPiece> createRandomTetrisPiece();
+    std::shared_ptr<TetrisPiece> createRandomTetrisPiece();
 
 private:
-    std::vector<boost::shared_ptr<TetrisPiece> > m_pieces;
+    std::vector<std::shared_ptr<TetrisPiece> > m_pieces;
 
 };
 
