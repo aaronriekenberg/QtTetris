@@ -25,7 +25,7 @@ public slots:
     void modelUpdated();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *pKeyEvent);
+    virtual void keyPressEvent(QKeyEvent *pKeyEvent) override;
     
 private:
     Ui::MainWindow* m_pUI = nullptr;

@@ -18,7 +18,7 @@ public:
 
     virtual std::shared_ptr<TetrisPiece>
     makeTetrisPiece(const TetrisCoordinate& centerCoordinate,
-                    int orientation) const
+                    int orientation) const override
     {
         return std::shared_ptr<TetrisPiece>(
                     new T(centerCoordinate, orientation));

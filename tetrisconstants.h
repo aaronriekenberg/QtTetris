@@ -22,8 +22,9 @@ public:
     };
 
 private:
-    TetrisConstants();
-    ~TetrisConstants();
+    TetrisConstants() = delete;
+
+    ~TetrisConstants() = delete;
 };
 
 #endif // TETRISCONSTANTS_H

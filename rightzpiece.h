@@ -10,9 +10,9 @@ public:
             const TetrisCoordinate& centerCoordinate,
             int orientation = 0);
 
-    virtual TetrisConstants::TetrisCellColor color() const;
+    virtual TetrisConstants::TetrisCellColor color() const override;
 
-    virtual int numOrientations() const;
+    virtual int numOrientations() const override;
 
 };
 
