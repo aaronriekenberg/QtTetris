@@ -23,7 +23,7 @@ public:
     void removeRow(int row);
 
 private:
-    std::vector<std::vector<TetrisConstants::TetrisCellColor> > m_stackCells;
+    std::vector<std::vector<TetrisConstants::TetrisCellColor>> m_stackCells;
 
 };
 

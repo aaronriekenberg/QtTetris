@@ -12,7 +12,7 @@ public:
     TetrisPiece(
             const TetrisCoordinate& centerCoordinate,
             int orientation,
-            const std::vector<TetrisCoordinate>& coordinates);
+            std::vector<TetrisCoordinate>&& coordinates);
 
     virtual ~TetrisPiece() = default;
 

@@ -10,8 +10,10 @@ public:
     AbstractTetrisPiece(
             const TetrisCoordinate& centerCoordinate,
             int orientation,
-            const std::vector<TetrisCoordinate>& coordinates) :
-        TetrisPiece(centerCoordinate, orientation, coordinates)
+            std::vector<TetrisCoordinate>&& coordinates) :
+        TetrisPiece(centerCoordinate,
+                    orientation,
+                    std::forward<std::vector<TetrisCoordinate>>(coordinates))
     {
 
     }

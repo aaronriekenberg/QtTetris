@@ -3,7 +3,7 @@
 TetrisPiece::TetrisPiece(
         const TetrisCoordinate& centerCoordinate,
         int orientation,
-        const std::vector<TetrisCoordinate>& coordinates) :
+        std::vector<TetrisCoordinate>&& coordinates) :
     m_centerCoordinate(centerCoordinate),
     m_orientation(orientation),
     m_coordinates(coordinates)
