@@ -13,7 +13,7 @@ public:
             std::vector<TetrisCoordinate>&& coordinates) :
         TetrisPiece(centerCoordinate,
                     orientation,
-                    std::move(coordinates))
+                    std::forward<std::vector<TetrisCoordinate>>(coordinates))
     {
 
     }
