@@ -6,7 +6,7 @@ TetrisPiece::TetrisPiece(
         std::vector<TetrisCoordinate>&& coordinates) :
     m_centerCoordinate(centerCoordinate),
     m_orientation(orientation),
-    m_coordinates(coordinates)
+    m_coordinates(std::move(coordinates))
 {
 
 }
