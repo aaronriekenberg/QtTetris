@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     tpiece.cpp \
     leftzpiece.cpp \
     rightzpiece.cpp \
-    tetrispiece.cpp
+    tetrispiece.cpp \
+    tetrisconstants.cpp
 
 HEADERS  += mainwindow.h \
     tetrismodel.h \

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include "tetrisconstants.h"
 #include "tetrisstackcells.h"
 
 TetrisStackCells::TetrisStackCells()
@@ -12,9 +13,9 @@ void TetrisStackCells::reset()
     m_stackCells.reserve(TetrisConstants::NUM_ROWS);
     for (int row = 0; row < TetrisConstants::NUM_ROWS; ++row)
     {
-        m_stackCells.push_back(
-                    std::vector<TetrisConstants::TetrisCellColor>(
-                        TetrisConstants::NUM_COLUMNS, TetrisConstants::CELL_NOT_PRESENT));
+        m_stackCells.emplace_back(
+                    TetrisConstants::NUM_COLUMNS,
+                    TetrisConstants::CELL_NOT_PRESENT);
     }
 }
 

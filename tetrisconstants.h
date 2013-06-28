@@ -4,10 +4,9 @@
 class TetrisConstants
 {
 public:
+    static const int NUM_ROWS;
 
-    static const int NUM_ROWS = 25;
-
-    static const int NUM_COLUMNS = 15;
+    static const int NUM_COLUMNS;
 
     enum TetrisCellColor
     {
