@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <boost/functional/hash.hpp>
 #include <unordered_map>
+#include <unordered_set>
 #include "tetrismodel.h"
 
 namespace Ui {
@@ -22,7 +23,9 @@ public:
     virtual ~MainWindow();
 
 public slots:
-    void modelUpdated();
+    void modelUpdated(
+            TetrisModel::UpdatedStatus_t stackCellsUpdated,
+            TetrisModel::UpdatedStatus_t currentPieceUpdated);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *pKeyEvent) override;
@@ -35,7 +38,13 @@ private:
     QTimer* m_pTimer = nullptr;
 
     std::unordered_map<TetrisCoordinate, QWidget*,
-        boost::hash<TetrisCoordinate>> m_tetrisCoordinateToQWidget;
+        boost::hash<TetrisCoordinate>> m_allWidgets;
+
+    std::unordered_set<TetrisCoordinate,
+        boost::hash<TetrisCoordinate>> m_currentPieceCoordinates;
+
+    std::unordered_set<TetrisCoordinate,
+        boost::hash<TetrisCoordinate>> m_stackCellCoordinates;
 };
 
 #endif // MAINWINDOW_H

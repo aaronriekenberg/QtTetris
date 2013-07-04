@@ -5,6 +5,46 @@
 #include <QKeyEvent>
 #include <iostream>
 
+namespace
+{
+
+void setQWidgetColor(QWidget& widget, const QColor& newColor)
+{
+    if (newColor != widget.palette().color(widget.backgroundRole()))
+    {
+        QPalette palette = widget.palette();
+        palette.setColor(widget.backgroundRole(), newColor);
+        widget.setPalette(palette);
+    }
+}
+
+QColor tetrisCellColorToQColor(
+        TetrisConstants::TetrisCellColor tetrisCellColor)
+{
+    switch (tetrisCellColor)
+    {
+    case TetrisConstants::CELL_NOT_PRESENT:
+        return QColor(Qt::black);
+    case TetrisConstants::CELL_RED:
+        return QColor(Qt::red);
+    case TetrisConstants::CELL_GREEN:
+        return QColor(Qt::green);
+    case TetrisConstants::CELL_LIGHTGRAY:
+        return QColor(Qt::lightGray);
+    case TetrisConstants::CELL_MAGENTA:
+        return QColor(Qt::magenta);
+    case TetrisConstants::CELL_CYAN:
+        return QColor(Qt::cyan);
+    case TetrisConstants::CELL_YELLOW:
+        return QColor(Qt::yellow);
+    case TetrisConstants::CELL_BLUE:
+        return QColor(Qt::blue);
+    }
+    return QColor(Qt::black);
+}
+
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     m_pUI(new Ui::MainWindow),
@@ -35,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
             pWidget->setAutoFillBackground(true);
             m_pUI->tetrisGrid->addWidget(pWidget, row, column);
             TetrisCoordinate coordinate(row, column);
-            m_tetrisCoordinateToQWidget[coordinate] = pWidget;
+            m_allWidgets[coordinate] = pWidget;
         }
     }
 
@@ -43,62 +83,69 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(m_pTimer, SIGNAL(timeout()), m_pModel, SLOT(periodicUpdate()));
     m_pTimer->start(250);
 
-    QObject::connect(m_pModel, SIGNAL(modelUpdated()), this, SLOT(modelUpdated()));
-    modelUpdated();
+    QObject::connect(m_pModel,
+                     SIGNAL(modelUpdated(TetrisModel::UpdatedStatus_t,
+                                         TetrisModel::UpdatedStatus_t)),
+                     this,
+                     SLOT(modelUpdated(TetrisModel::UpdatedStatus_t,
+                                       TetrisModel::UpdatedStatus_t)));
+    modelUpdated(TetrisModel::UPDATED, TetrisModel::UPDATED);
 }
 
-void MainWindow::modelUpdated()
+void MainWindow::modelUpdated(
+        TetrisModel::UpdatedStatus_t stackCellsUpdated,
+        TetrisModel::UpdatedStatus_t currentPieceUpdated)
 {
-    const auto& drawableCells = m_pModel->drawableCells();
-    //std::cout << "MainWindow::modelUpdated drawableCells.size = " << drawableCells.size() << std::endl;
-    for (int row = 0; row < TetrisConstants::NUM_ROWS; ++row)
-    {
-        for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
-        {
-            TetrisCoordinate coordinate(row, column);
-            QColor newQtColor(Qt::black);
-            auto drawableCellsIter = drawableCells.find(coordinate);
-            if (drawableCellsIter != drawableCells.end())
-            {
-                TetrisConstants::TetrisCellColor newCellColor = drawableCellsIter->second;
-                switch (newCellColor)
-                {
-                case TetrisConstants::CELL_NOT_PRESENT:
-                    newQtColor = QColor(Qt::black);
-                    break;
-                case TetrisConstants::CELL_RED:
-                    newQtColor = QColor(Qt::red);
-                    break;
-                case TetrisConstants::CELL_GREEN:
-                    newQtColor = QColor(Qt::green);
-                    break;
-                case TetrisConstants::CELL_LIGHTGRAY:
-                    newQtColor = QColor(Qt::lightGray);
-                    break;
-                case TetrisConstants::CELL_MAGENTA:
-                    newQtColor = QColor(Qt::magenta);
-                    break;
-                case TetrisConstants::CELL_CYAN:
-                    newQtColor = QColor(Qt::cyan);
-                    break;
-                case TetrisConstants::CELL_YELLOW:
-                    newQtColor = QColor(Qt::yellow);
-                    break;
-                case TetrisConstants::CELL_BLUE:
-                    newQtColor = QColor(Qt::blue);
-                    break;
-                }
-            }
+    std::unordered_map<TetrisCoordinate, QColor,
+        boost::hash<TetrisCoordinate>> updatedCellCoordinateToColor;
 
-            QWidget* pWidget = m_tetrisCoordinateToQWidget[coordinate];
-            if (newQtColor != pWidget->palette().color(pWidget->backgroundRole()))
-            {
-                //std::cout << "updating color for row " << row << " column " << column << std::endl;
-                QPalette palette = pWidget->palette();
-                palette.setColor(pWidget->backgroundRole(), newQtColor);
-                pWidget->setPalette(palette);
-            }
+    if (stackCellsUpdated == TetrisModel::UPDATED)
+    {
+        for (TetrisCoordinate coordinate : m_stackCellCoordinates)
+        {
+            updatedCellCoordinateToColor[coordinate] = QColor(Qt::black);
         }
+        m_stackCellCoordinates.clear();
+    }
+
+    if (currentPieceUpdated == TetrisModel::UPDATED)
+    {
+        for (TetrisCoordinate coordinate : m_currentPieceCoordinates)
+        {
+            updatedCellCoordinateToColor[coordinate] = QColor(Qt::black);
+        }
+        m_currentPieceCoordinates.clear();
+    }
+
+    if (stackCellsUpdated == TetrisModel::UPDATED)
+    {
+        const auto& drawableStackCells = m_pModel->drawableStackCells();
+        for (auto drawableEntry : drawableStackCells)
+        {
+            TetrisCoordinate coordinate = drawableEntry.first;
+            updatedCellCoordinateToColor[coordinate] =
+                    tetrisCellColorToQColor(drawableEntry.second);
+            m_stackCellCoordinates.insert(coordinate);
+        }
+    }
+
+    if (currentPieceUpdated == TetrisModel::UPDATED)
+    {
+        const auto& drawableCurrentPieceCells = m_pModel->drawableCurrentPieceCells();
+        for (auto drawableEntry : drawableCurrentPieceCells)
+        {
+            TetrisCoordinate coordinate = drawableEntry.first;
+            updatedCellCoordinateToColor[coordinate] =
+                    tetrisCellColorToQColor(drawableEntry.second);
+            m_currentPieceCoordinates.insert(coordinate);
+        }
+    }
+
+    for (auto updatedEntry : updatedCellCoordinateToColor)
+    {
+        TetrisCoordinate coordinate = updatedEntry.first;
+        QWidget* pWidget = m_allWidgets[coordinate];
+        setQWidgetColor(*pWidget, updatedEntry.second);
     }
 
     if (m_pModel->gameOver())

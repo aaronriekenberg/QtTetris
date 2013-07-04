@@ -49,7 +49,13 @@ void TetrisModel::reset()
 
     m_stackCells.reset();
 
-    m_drawableCells.clear();
+    m_drawableStackCells.clear();
+
+    m_stackCellsUpdated = UPDATED;
+
+    m_drawableCurrentPieceCells.clear();
+
+    m_currentPieceUpdated = UPDATED;
 
     m_numLines = 0;
 
@@ -61,9 +67,28 @@ void TetrisModel::reset()
 }
 
 const TetrisModel::DrawableCellsMap_t&
-TetrisModel::drawableCells() const
+TetrisModel::drawableStackCells() const
 {
-    return m_drawableCells;
+    return m_drawableStackCells;
+}
+
+TetrisModel::UpdatedStatus_t
+TetrisModel::stackCellsUpdated() const
+{
+    return m_stackCellsUpdated;
+}
+
+
+const TetrisModel::DrawableCellsMap_t&
+TetrisModel::drawableCurrentPieceCells() const
+{
+    return m_drawableCurrentPieceCells;
+}
+
+TetrisModel::UpdatedStatus_t
+TetrisModel::currentPieceUpdated() const
+{
+    return m_currentPieceUpdated;
 }
 
 void TetrisModel::periodicUpdate()
@@ -93,12 +118,12 @@ void TetrisModel::moveCurrentPieceDown()
                     m_pCurrentPiece->centerRow() + 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
         {
-            m_pCurrentPiece = pCurrentPieceMoved;
+            setCurrentPiece(pCurrentPieceMoved);
         }
         else
         {
             addCurrentPieceToStack();
-            m_pCurrentPiece.reset();
+            clearCurrentPiece();
         }
         publishTetrisModelEvent();
     }
@@ -127,7 +152,7 @@ void TetrisModel::moveCurrentPieceLeft()
                     m_pCurrentPiece->centerColumn() - 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
         {
-            m_pCurrentPiece = pCurrentPieceMoved;
+            setCurrentPiece(pCurrentPieceMoved);
             publishTetrisModelEvent();
         }
     }
@@ -142,7 +167,7 @@ void TetrisModel::moveCurrentPieceRight()
                     m_pCurrentPiece->centerColumn() + 1);
         if (isPieceLocationValid(*pCurrentPieceMoved))
         {
-            m_pCurrentPiece = pCurrentPieceMoved;
+            setCurrentPiece(pCurrentPieceMoved);
             publishTetrisModelEvent();
         }
     }
@@ -156,7 +181,7 @@ void TetrisModel::rotateCurrentPiece()
                 m_pCurrentPiece->cloneWithNextOrientation();
         if (isPieceLocationValid(*pCurrentPieceRotated))
         {
-            m_pCurrentPiece = pCurrentPieceRotated;
+            setCurrentPiece(pCurrentPieceRotated);
             publishTetrisModelEvent();
         }
     }
@@ -193,13 +218,27 @@ void TetrisModel::addNewPiece()
     auto pNewPiece = m_pieceFactory.createRandomTetrisPiece();
     if (isPieceLocationValid(*pNewPiece))
     {
-        m_pCurrentPiece = pNewPiece;
+        setCurrentPiece(pNewPiece);
     }
     else
     {
-        m_pCurrentPiece.reset();
+        clearCurrentPiece();
         m_gameOver = true;
     }
+}
+
+
+void TetrisModel::setCurrentPiece(
+        std::shared_ptr<TetrisPiece> pCurrentPiece)
+{
+    m_pCurrentPiece = pCurrentPiece;
+    m_currentPieceUpdated = UPDATED;
+}
+
+void TetrisModel::clearCurrentPiece()
+{
+    m_pCurrentPiece.reset();
+    m_currentPieceUpdated = UPDATED;
 }
 
 void TetrisModel::addCurrentPieceToStack()
@@ -211,6 +250,7 @@ void TetrisModel::addCurrentPieceToStack()
             m_stackCells.set(coordinate, m_pCurrentPiece->color());
         }
         handleFilledStackRows();
+        m_stackCellsUpdated = UPDATED;
     }
 }
 
@@ -231,7 +271,7 @@ void TetrisModel::handleFilledStackRows()
     }
 }
 
-bool TetrisModel::isPieceLocationValid(const TetrisPiece& tetrisPiece)
+bool TetrisModel::isPieceLocationValid(const TetrisPiece& tetrisPiece) const
 {
     for (auto coordinate : tetrisPiece.coordinates())
     {
@@ -249,25 +289,31 @@ bool TetrisModel::isPieceLocationValid(const TetrisPiece& tetrisPiece)
 
 void TetrisModel::updateDrawableCells()
 {
-    m_drawableCells.clear();
-
-    if (m_pCurrentPiece)
+    if (m_currentPieceUpdated == UPDATED)
     {
-        for (auto coordinate : m_pCurrentPiece->coordinates())
+        m_drawableCurrentPieceCells.clear();
+        if (m_pCurrentPiece)
         {
-            m_drawableCells[coordinate] = m_pCurrentPiece->color();
+            for (auto coordinate : m_pCurrentPiece->coordinates())
+            {
+                m_drawableCurrentPieceCells[coordinate] = m_pCurrentPiece->color();
+            }
         }
     }
 
-    for (int row = 0; row < TetrisConstants::NUM_ROWS; ++row)
+    if (m_stackCellsUpdated == UPDATED)
     {
-        for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
+        m_drawableStackCells.clear();
+        for (int row = 0; row < TetrisConstants::NUM_ROWS; ++row)
         {
-            TetrisCoordinate coordinate(row, column);
-            TetrisConstants::TetrisCellColor cellColor = m_stackCells.get(coordinate);
-            if (cellColor != TetrisConstants::CELL_NOT_PRESENT)
+            for (int column = 0; column < TetrisConstants::NUM_COLUMNS; ++column)
             {
-                m_drawableCells[coordinate] = cellColor;
+                TetrisCoordinate coordinate(row, column);
+                TetrisConstants::TetrisCellColor cellColor = m_stackCells.get(coordinate);
+                if (cellColor != TetrisConstants::CELL_NOT_PRESENT)
+                {
+                    m_drawableStackCells[coordinate] = cellColor;
+                }
             }
         }
     }
@@ -278,6 +324,8 @@ void TetrisModel::publishTetrisModelEvent()
     if (m_deferPublishCount == 0)
     {
         updateDrawableCells();
-        emit modelUpdated();
+        emit modelUpdated(m_stackCellsUpdated, m_currentPieceUpdated);
+        m_currentPieceUpdated = NOT_UPDATED;
+        m_stackCellsUpdated = NOT_UPDATED;
     }
 }

@@ -17,10 +17,24 @@ public:
 
     void reset();
 
-    typedef std::unordered_map<TetrisCoordinate, TetrisConstants::TetrisCellColor,
+    typedef std::unordered_map<
+        TetrisCoordinate,
+        TetrisConstants::TetrisCellColor,
         boost::hash<TetrisCoordinate>> DrawableCellsMap_t;
 
-    const DrawableCellsMap_t& drawableCells() const;
+    enum UpdatedStatus_t
+    {
+        UPDATED,
+        NOT_UPDATED
+    };
+
+    const DrawableCellsMap_t& drawableStackCells() const;
+
+    UpdatedStatus_t stackCellsUpdated() const;
+
+    const DrawableCellsMap_t& drawableCurrentPieceCells() const;
+
+    UpdatedStatus_t currentPieceUpdated() const;
 
     void moveCurrentPieceDown();
 
@@ -43,7 +57,9 @@ public:
     int numLines() const;
     
 signals:
-    void modelUpdated();
+    void modelUpdated(
+            TetrisModel::UpdatedStatus_t stackCellsUpdated,
+            TetrisModel::UpdatedStatus_t currentPieceUpdated);
 
 public slots:
     void periodicUpdate();
@@ -55,11 +71,15 @@ private:
 
     void addNewPiece();
 
+    void setCurrentPiece(std::shared_ptr<TetrisPiece> pCurrentPiece);
+
+    void clearCurrentPiece();
+
     void addCurrentPieceToStack();
 
     void handleFilledStackRows();
 
-    bool isPieceLocationValid(const TetrisPiece& tetrisPiece);
+    bool isPieceLocationValid(const TetrisPiece& tetrisPiece) const;
 
     void updateDrawableCells();
 
@@ -71,7 +91,13 @@ private:
 
     std::shared_ptr<TetrisPiece> m_pCurrentPiece;
 
-    DrawableCellsMap_t m_drawableCells;
+    DrawableCellsMap_t m_drawableStackCells;
+
+    UpdatedStatus_t m_stackCellsUpdated = UPDATED;
+
+    DrawableCellsMap_t m_drawableCurrentPieceCells;
+
+    UpdatedStatus_t m_currentPieceUpdated = UPDATED;
 
     int m_numLines = 0;
 
